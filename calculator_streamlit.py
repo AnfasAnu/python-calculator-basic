@@ -1,5 +1,8 @@
 import streamlit as st
 
+if "history" not in st.session_state:
+    st.session_state.history = []
+    
 st.title("Anfas Calculator")
 
 num1 = st.number_input("Enter first number")
@@ -10,19 +13,29 @@ operator = st.selectbox(
     ["+", "-", "*", "/","%"]
 )
 if st.button("Calculate"):
+    result = None
     if operator == "+":
-       st.success(f"Result: {num1 + num2}")
+     result = num1 + num2
     elif operator == "-":
-        st.success(f"Result: {num1 - num2}")
+        result = num1 - num2
     elif operator == "*":
-        st.success(f"Result: {num1 * num2}")
+        result = num1 * num2
     elif operator == "/":
         if num2 == 0:
             st.error("error: division by zero")
         else:
-            st.success(f"Result: {num1 / num2}")
+            result = num1 / num2
     elif operator == "%":
         if num2 == 0:
             st.error("error: modulo by zero")
         else:
-            st.success(f"Result: {num1 % num2}")
+            result = num1 % num2
+
+    if result is not None:
+        st.success(f"Result: {result}")
+        st.session_state.history.append(f"{num1} {operator} {num2} = {result}")
+st.subheader("Calculation History")
+for item in st.session_state.history:
+    st.write(item)
+if st.button("Clear History"):
+    st.session_state.history.clear()
